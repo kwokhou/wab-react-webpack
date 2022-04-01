@@ -1,12 +1,12 @@
-import 'core-js/stable';
-import 'regenerator-runtime/runtime';
+import 'core-js/stable'
+import 'regenerator-runtime/runtime'
 
-import React from 'react';
-import PropTypes from 'prop-types';
+import React from 'react'
+import PropTypes from 'prop-types'
 
-import ErrorBoundary from './ErrorBoundary';
-import { WidgetProvider } from './Context';
-import MyComponent from './MyComponent';
+import ErrorBoundary from './ErrorBoundary'
+import { WidgetProvider } from './Context'
+import MyComponent from './MyComponent'
 
 const App = props => {
   return (
@@ -17,22 +17,22 @@ const App = props => {
         onOpen={props.onOpen}
         onClose={props.onClose}
       >
-        <MyComponent title="WAB Widget" />
+        <MyComponent title='WAB Widget' />
       </WidgetProvider>
     </ErrorBoundary>
-  );
-};
+  )
+}
 
 App.propTypes = {
   wab: PropTypes.object,
   esriJS: PropTypes.object,
   onOpen: PropTypes.func.isRequired,
-  onClose: PropTypes.func.isRequired,
-};
+  onClose: PropTypes.func.isRequired
+}
 
 App.defaultProps = {
   wab: {},
-  esriJS: {},
-};
+  esriJS: {}
+}
 
-export default App;
+export default App

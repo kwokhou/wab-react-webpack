@@ -1,3 +1,3 @@
-const App = require('./components/App');
+const App = require('./components/App')
 
-module.exports = App.default;
+module.exports = App.default

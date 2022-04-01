@@ -1,8 +1,8 @@
 /* eslint-disable import/no-extraneous-dependencies */
-const path = require('path');
-const webpack = require('webpack');
-const Dotenv = require('dotenv-webpack');
-const packageJson = require('./package.json');
+const path = require('path')
+const webpack = require('webpack')
+const Dotenv = require('dotenv-webpack')
+const packageJson = require('./package.json')
 
 module.exports = {
   entry: ['./src/index.js'],
@@ -12,10 +12,10 @@ module.exports = {
     library: 'EBAWidget',
     libraryTarget: 'umd',
     filename: 'App.js',
-    path: path.resolve(__dirname, 'dist/MyReactWidget'),
+    path: path.resolve(__dirname, 'dist/MyReactWidget')
   },
   resolve: {
-    extensions: ['.js', '.jsx'],
+    extensions: ['.js', '.jsx']
   },
   module: {
     rules: [
@@ -23,12 +23,12 @@ module.exports = {
         test: /\.js?$/,
         exclude: /(node_modules|bower_components)/,
         use: {
-          loader: 'babel-loader',
-        },
+          loader: 'babel-loader'
+        }
       },
       {
         test: /\.css$/,
-        use: ['style-loader', 'css-loader'],
+        use: ['style-loader', 'css-loader']
       },
       {
         test: /\.(png|jpg|gif|woff|woff2|eot|ttf|svg)$/,
@@ -36,32 +36,32 @@ module.exports = {
           {
             loader: 'url-loader',
             options: {
-              limit: 8192,
-            },
-          },
-        ],
-      },
-    ],
+              limit: 8192
+            }
+          }
+        ]
+      }
+    ]
   },
   plugins: [
     new Dotenv(),
     new webpack.optimize.OccurrenceOrderPlugin(),
     new webpack.DefinePlugin({
-      'process.env.VERSION': JSON.stringify(packageJson.version),
-    }),
+      'process.env.VERSION': JSON.stringify(packageJson.version)
+    })
   ],
   externals: {
     react: {
       root: 'React',
       commonjs2: 'react',
       commonjs: 'react',
-      amd: 'react',
+      amd: 'react'
     },
     reactDOM: {
       root: 'ReactDOM',
       commonjs2: 'react-dom',
       commonjs: 'react-dom',
-      amd: 'react-dom',
-    },
-  },
-};
+      amd: 'react-dom'
+    }
+  }
+}

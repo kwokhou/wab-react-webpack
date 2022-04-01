@@ -6,9 +6,9 @@ require({
     react:
       'https://cdnjs.cloudflare.com/ajax/libs/react/16.8.6/umd/react.production.min',
     'react-dom':
-      'https://cdnjs.cloudflare.com/ajax/libs/react-dom/16.8.6/umd/react-dom.production.min',
-  },
-});
+      'https://cdnjs.cloudflare.com/ajax/libs/react-dom/16.8.6/umd/react-dom.production.min'
+  }
+})
 
 // Widget
 define([
@@ -19,7 +19,7 @@ define([
   'esri/layers/FeatureLayer',
   'react',
   'react-dom',
-  './App',
+  './App'
 ], (
   declare,
   aspect,
@@ -28,43 +28,43 @@ define([
   FeatureLayer,
   React,
   ReactDOM,
-  App,
+  App
 ) => {
   return declare([BaseWidget], {
     baseClass: 'my-react-widget',
     // ------------------------ //
     //          REACT
     // ------------------------ //
-    renderWidget() {
+    renderWidget () {
       // props
       const wab = {
         map: this.map,
         config: this.config,
-        id: this.id,
-      };
+        id: this.id
+      }
       const esriJS = {
         LayerInfos,
-        FeatureLayer,
-      };
+        FeatureLayer
+      }
       // open/close handlers
       const onOpen = func => {
-        aspect.after(this, 'onOpen', func, true);
-      };
+        aspect.after(this, 'onOpen', func, true)
+      }
       const onClose = func => {
-        aspect.after(this, 'onClose', func, true);
-      };
-      const root = document.getElementById('my-react-widget-root');
+        aspect.after(this, 'onClose', func, true)
+      }
+      const root = document.getElementById('my-react-widget-root')
       ReactDOM.render(
         <App wab={wab} esriJS={esriJS} onOpen={onOpen} onClose={onClose} />,
-        root,
-      );
+        root
+      )
     },
     // ------------------------ //
     //      WIDGET LIFECYCLE
     // ------------------------ //
-    startup() {
-      console.clear();
-      this.renderWidget();
-    },
-  });
-});
+    startup () {
+      console.clear()
+      this.renderWidget()
+    }
+  })
+})

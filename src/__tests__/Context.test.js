@@ -1,12 +1,12 @@
-import React from 'react';
-import { render, wait, cleanup } from '@testing-library/react';
-import '@testing-library/jest-dom/extend-expect';
+import React from 'react'
+import { render, wait, cleanup } from '@testing-library/react'
+import '@testing-library/jest-dom/extend-expect'
 
-import { WidgetProvider } from '../components/Context';
+import { WidgetProvider } from '../components/Context'
 
-import mock from './__mock__/propsMock';
+import mock from './__mock__/propsMock'
 
-afterEach(cleanup);
+afterEach(cleanup)
 
 describe('<WidgetProvider />', () => {
   it('renders the widget', async () => {
@@ -19,10 +19,10 @@ describe('<WidgetProvider />', () => {
         onClose={jest.fn}
       >
         <div>children</div>
-      </WidgetProvider>,
-    );
+      </WidgetProvider>
+    )
 
     // wait for useEffect
-    await wait(() => expect(container.firstChild).toMatchSnapshot());
-  });
-});
+    await wait(() => expect(container.firstChild).toMatchSnapshot())
+  })
+})

@@ -3,13 +3,13 @@ const mock = {
     map: null,
     id: 0,
     config: {
-      layerCollection: [],
-    },
+      layerCollection: []
+    }
   },
   esriJS: {
     LayerInfos: jest.fn,
-    FeatureLayer: jest.fn,
-  },
-};
+    FeatureLayer: jest.fn
+  }
+}
 
-export default mock;
+export default mock

@@ -1,54 +1,54 @@
 /* eslint-disable no-console */
 
-import _ from 'lodash';
+import _ from 'lodash'
 
 // Empty object that will house Feature layer objects
 // this is returned in promise
-const collection = {};
+const collection = {}
 
 // Get layers from the Map
 const getLayerInfo = (LayerInfos, map) => {
   // Get all the layers in the map
   return LayerInfos.getInstance(map, map.itemInfo).then(layerInfosObject => {
-    return layerInfosObject.getLayerInfoArray();
-  });
-};
+    return layerInfosObject.getLayerInfoArray()
+  })
+}
 
 // Add Feature layer object to collection
 const updateCollection = (name, feature, added) => {
   collection[name] = {
     feature,
-    added,
-  };
-};
+    added
+  }
+}
 
 // Create feature Layer
 
 const createFL = (FeatureLayer, name, url, token) => {
-  console.info('Adding feature to map: ', name);
+  console.info('Adding feature to map: ', name)
   const featURL =
-    process.env.NODE_ENV !== 'production' ? `${url}?token=${token}` : url;
+    process.env.NODE_ENV !== 'production' ? `${url}?token=${token}` : url
   const featToAdd = new FeatureLayer(featURL, {
     mode: FeatureLayer.MODE_ONDEMAND,
-    outFields: ['*'],
-  });
-  return featToAdd;
-};
+    outFields: ['*']
+  })
+  return featToAdd
+}
 
 // Add feature layer to map and collection
 const addFeatureToMap = async (FeatureLayer, map, name, url, token) => {
   try {
-    const featToAdd = createFL(FeatureLayer, name, url, token);
+    const featToAdd = createFL(FeatureLayer, name, url, token)
 
     // Add to map
-    map.addLayer(featToAdd);
+    map.addLayer(featToAdd)
 
     // Add to collection
-    return updateCollection(name, featToAdd, true);
+    return updateCollection(name, featToAdd, true)
   } catch (error) {
-    return error;
+    return error
   }
-};
+}
 
 // Load layers and add to collection
 // this is function that is exposed
@@ -62,8 +62,8 @@ const loadLayers = (esriJS, map, layerCollection) => {
             // Return feature layer obj if feature url from config
             // is found in map layers object
             const foundFeature = _.find(mapLayers, layer => {
-              return item.url === layer.layerObject.url;
-            });
+              return item.url === layer.layerObject.url
+            })
             // Add to map if not found
             if (!foundFeature) {
               return addFeatureToMap(
@@ -71,21 +71,21 @@ const loadLayers = (esriJS, map, layerCollection) => {
                 map,
                 item.name,
                 item.url,
-                process.env.TOKEN,
-              );
+                process.env.TOKEN
+              )
             }
             // Otherwise add feature layer obj to collection
-            return updateCollection(item.name, foundFeature.layerObject, false);
-          });
+            return updateCollection(item.name, foundFeature.layerObject, false)
+          })
         })
         .then(() => {
           // Return collection
-          resolve(collection);
-        });
+          resolve(collection)
+        })
     } catch (e) {
-      reject(e);
+      reject(e)
     }
-  });
-};
+  })
+}
 
-export default loadLayers;
+export default loadLayers

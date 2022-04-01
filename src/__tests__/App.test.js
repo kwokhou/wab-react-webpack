@@ -1,12 +1,12 @@
-import React from 'react';
-import { render, wait, cleanup } from '@testing-library/react';
-import '@testing-library/jest-dom/extend-expect';
+import React from 'react'
+import { render, wait, cleanup } from '@testing-library/react'
+import '@testing-library/jest-dom/extend-expect'
 
-import App from '../components/App';
+import App from '../components/App'
 
-import mock from './__mock__/propsMock';
+import mock from './__mock__/propsMock'
 
-afterEach(cleanup);
+afterEach(cleanup)
 
 // https://testing-library.com/docs/react-testing-library/example-intro
 describe('<App />', () => {
@@ -18,20 +18,20 @@ describe('<App />', () => {
         esriJS={mock.esriJS}
         onOpen={jest.fn}
         onClose={jest.fn}
-      />,
-    );
+      />
+    )
 
     // test inital render
-    expect(getByText('Loading...')).toBeInTheDocument();
-    expect(container.firstChild).toMatchSnapshot();
+    expect(getByText('Loading...')).toBeInTheDocument()
+    expect(container.firstChild).toMatchSnapshot()
 
     // wait for useEffect
     await wait(() =>
-      expect(queryByText(/Loading\.\.\./i)).not.toBeInTheDocument(),
-    );
+      expect(queryByText(/Loading\.\.\./i)).not.toBeInTheDocument()
+    )
 
     // this will be error bc we cant access the JS api from the test
     // but can test post useEffect
-    expect(getByText('Error...')).toBeInTheDocument();
-  });
-});
+    expect(getByText('Error...')).toBeInTheDocument()
+  })
+})
