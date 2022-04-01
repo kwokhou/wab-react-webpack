@@ -1,101 +1,125 @@
-/* eslint-disable arrow-body-style */
-const path = require('path');
-const gulp = require('gulp');
-const babel = require('gulp-babel');
-const webpack = require('webpack-stream');
-const browserSync = require('browser-sync').create();
-const webpackConfig = require('./webpack.config.js');
-const webpackProdConfig = require('./webpack.prod.config.js');
+const path = require('path')
+const gulp = require('gulp')
+const gulpBabel = require('gulp-babel')
+const del = require('del')
+const webpack = require('webpack-stream')
+const browserSync = require('browser-sync').create()
+const webpackConfig = require('./webpack.config.js')
+const webpackProdConfig = require('./webpack.prod.config.js')
 
-const PATHS = {
-  name: 'MyReactWidget',
+const widgetName = 'MyReactWidget'
+
+const paths = {
+  name: widgetName,
   app: 'app',
   src: 'src/**/*.*',
   entry: 'src/index.js',
-  widget: 'src/Widget.js',
-  other: [
+  widgetJS: 'src/Widget.js',
+  static: [
     'src/**/*.json',
     'src/**/*.html',
     'src/**/*.jpg',
     'src/**/*.png',
     'src/**/style.css',
-    'src/**/strings.js',
+    'src/**/strings.js'
   ],
-  dest: 'app/widgets/MyReactWidget',
-  dist: 'dist',
-};
+  out: `app/widgets/${widgetName}`,
+  dist: 'dist'
+}
+
+// ------------------------ //
+//       BROWSERSYNC
+// ------------------------ //
+const startServer = done => {
+  browserSync.init({
+    server: {
+      baseDir: paths.app
+    },
+    https: true
+  })
+  done()
+}
 
 // ------------------------ //
 //          BABEL
 // ------------------------ //
-gulp.task('babel', () => {
+const babel = () => {
   return gulp
-    .src(PATHS.widget)
-    .pipe(babel())
-    .pipe(gulp.dest(PATHS.dest))
-    .pipe(
-      browserSync.reload({
-        stream: true,
-      }),
-    );
-});
+    .src(paths.widgetJS)
+    .pipe(gulpBabel())
+    .pipe(gulp.dest(paths.out))
+    .pipe(browserSync.stream())
+}
 
 // ------------------------ //
-//         WEBPACK
+//          WEBPACK
 // ------------------------ //
-gulp.task('webpack', () => {
+const compile = () => {
   return gulp
-    .src(PATHS.entry)
+    .src(paths.entry)
     .pipe(webpack(webpackConfig))
-    .pipe(gulp.dest(PATHS.dest))
-    .pipe(
-      browserSync.reload({
-        stream: true,
-      }),
-    );
-});
+    .pipe(gulp.dest(paths.out))
+    .pipe(browserSync.stream())
+  // .pipe(reloadServer);
+}
 
-gulp.task('webpack-prod', () => {
+const compileProd = () => {
   return gulp
-    .src(PATHS.entry)
+    .src(paths.entry)
     .pipe(webpack(webpackProdConfig))
-    .pipe(gulp.dest(PATHS.dest));
-});
+    .pipe(gulp.dest(paths.out))
+}
 
 // ------------------------ //
-//        GULP TASKS
+//       STATIC FILES
 // ------------------------ //
-gulp.task('other-files', () => {
+const processStatic = () => {
   return gulp
-    .src(PATHS.other)
-    .pipe(gulp.dest(PATHS.dest))
-    .pipe(
-      browserSync.reload({
-        stream: true,
-      }),
-    );
-});
+    .src(paths.static)
+    .pipe(gulp.dest(paths.out))
+    .pipe(browserSync.stream())
+}
 
-// Local Server
-gulp.task('browserSync', () => {
-  browserSync.init({
-    server: {
-      baseDir: PATHS.app,
-    },
-    https: true,
-  });
-});
+// ------------------------ //
+//          WATCH
+// ------------------------ //
+const watch = () => {
+  gulp.watch(paths.src, compile)
+  gulp.watch(paths.widgetJS, babel)
+  gulp.watch(paths.static, processStatic)
+}
 
-// Copy widget folders to dist
-gulp.task('deploy', ['webpack-prod', 'babel', 'other-files'], () => {
+// ------------------------ //
+//          DEPLOY
+// ------------------------ //
+const clean = () => {
+  return del.sync([paths.dist])
+}
+
+const build = () => {
+  console.log(path.join(paths.out, '/**/*'))
+  console.log(path.join(paths.dist, paths.name))
   return gulp
-    .src(path.join(PATHS.dest, '/**/*'))
-    .pipe(gulp.dest(path.join(PATHS.dist, PATHS.name)));
-});
+    .src(paths.out, '/**/*')
+    .pipe(gulp.dest(path.join(paths.dist, paths.name)))
+}
 
-// Launch Server and Watch for file changes
-gulp.task('default', ['browserSync', 'webpack', 'babel', 'other-files'], () => {
-  gulp.watch(PATHS.src, ['webpack']);
-  gulp.watch(PATHS.widget, ['babel']);
-  gulp.watch(PATHS.other, ['other-files']);
-});
+// ------------------------ //
+//          TASKS
+// ------------------------ //
+const serve = gulp.series(
+  gulp.parallel(compile, babel, processStatic),
+  startServer
+)
+const deploy = gulp.series(
+  gulp.parallel(compileProd, babel, processStatic),
+  build
+)
+
+const defaultTasks = gulp.parallel(serve, watch)
+
+exports.clean = clean
+exports.compileProd = compileProd
+exports.build = build
+exports.deploy = deploy
+exports.default = defaultTasks
